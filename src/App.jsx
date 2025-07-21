@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+// Perhatikan path import di bawah ini, tidak lagi menggunakan .js
+import HomePage from './pages/HomePage'; 
+import RegisterPage from './pages/RegisterPage';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+// Simple Navbar component
+function Navbar() {
   return (
-    <>
+    <nav style={{ background: '#333', padding: '15px 10%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold' }}>PelatihanKita</Link>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Link to="/" style={{ color: 'white', textDecoration: 'none', margin: '0 15px' }}>Beranda</Link>
+        <Link to="/daftar" style={{ color: 'white', textDecoration: 'none', margin: '0 15px' }}>Pendaftaran</Link>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </nav>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <Navbar />
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/daftar" element={<RegisterPage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
