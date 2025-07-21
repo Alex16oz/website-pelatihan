@@ -154,3 +154,33 @@ body {
   cursor: pointer;
   margin-top: 20px;
 }
+
+/* Styling for Training Selection Radio Buttons */
+.form-group-radio {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.form-group-radio:has(input:checked) {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+.form-group-radio input[type="radio"] {
+  margin-right: 15px;
+  margin-top: 5px;
+  width: 1.2em;
+  height: 1.2em;
+}
+.form-group-radio label {
+  cursor: pointer;
+  width: 100%;
+}
+.form-group-radio label p {
+    margin: 5px 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
