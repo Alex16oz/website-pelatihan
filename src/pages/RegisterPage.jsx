@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '../supabaseClient'; // Impor klien Supabase
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -7,30 +8,42 @@ const RegisterPage = () => {
     phone: '',
     address: '',
   });
-  
-  const [files, setFiles] = useState({
-    cv: null,
-    ktp: null,
-    ijazah: null,
-  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFiles(prevFiles => ({ ...prevFiles, [name]: files[0] }));
-  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Untuk saat ini, kita hanya tampilkan di console
-    // Nantinya, data ini akan dikirim ke Supabase
-    console.log("Data Pendaftar:", formData);
-    console.log("Dokumen Terunggah:", files);
-    alert('Pendaftaran berhasil! Silakan cek console log untuk melihat data.');
+
+    // Kirim data pendaftar ke tabel Supabase
+    const { data, error } = await supabase
+      .from('pendaftar') // Pastikan nama tabel sudah benar
+      .insert([
+        { 
+          nama_lengkap: formData.fullName, 
+          email: formData.email,
+          telepon: formData.phone,
+          alamat: formData.address,
+        },
+      ]);
+
+    if (error) {
+      console.error('Error submitting data:', error);
+      alert('Pendaftaran gagal. Silakan coba lagi.');
+    } else {
+      console.log("Data Pendaftar Berhasil Disimpan:", data);
+      alert('Pendaftaran berhasil!');
+      // Kosongkan form setelah berhasil
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+      });
+      e.target.reset();
+    }
   };
 
   return (
@@ -41,40 +54,22 @@ const RegisterPage = () => {
       <form onSubmit={handleSubmit} className="register-form">
         <div className="form-group">
           <label htmlFor="fullName">Nama Lengkap</label>
-          <input type="text" id="fullName" name="fullName" onChange={handleInputChange} required />
+          <input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} required />
         </div>
         
         <div className="form-group">
           <label htmlFor="email">Alamat Email</label>
-          <input type="email" id="email" name="email" onChange={handleInputChange} required />
+          <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required />
         </div>
         
         <div className="form-group">
           <label htmlFor="phone">Nomor Telepon</label>
-          <input type="tel" id="phone" name="phone" onChange={handleInputChange} required />
+          <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required />
         </div>
         
         <div className="form-group">
           <label htmlFor="address">Alamat Lengkap</label>
-          <textarea id="address" name="address" rows="3" onChange={handleInputChange} required></textarea>
-        </div>
-        
-        <hr />
-        <h4>Unggah Dokumen</h4>
-
-        <div className="form-group">
-          <label htmlFor="cv">Curriculum Vitae (CV) (.pdf)</label>
-          <input type="file" id="cv" name="cv" accept=".pdf" onChange={handleFileChange} required />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="ktp">Kartu Tanda Penduduk (KTP) (.jpg, .png)</label>
-          <input type="file" id="ktp" name="ktp" accept="image/png, image/jpeg" onChange={handleFileChange} required />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="ijazah">Ijazah Terakhir (.pdf)</label>
-          <input type="file" id="ijazah" name="ijazah" accept=".pdf" onChange={handleFileChange} required />
+          <textarea id="address" name="address" rows="3" value={formData.address} onChange={handleInputChange} required></textarea>
         </div>
 
         <button type="submit" className="btn-submit">Submit Pendaftaran</button>
